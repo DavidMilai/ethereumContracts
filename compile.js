@@ -3,7 +3,7 @@ const fs = require('fs');
 const solc = require('solc');
 
 const inboxPath = path.resolve(__dirname, 'Contracts', 'Inbox.sol');
-const source = fs.readFileSync(inboxPath, 'UTF-8');
+const source = fs.readFileSync(inboxPath, 'utf8');
 
 
 var input = {
