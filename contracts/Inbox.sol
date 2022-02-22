@@ -8,7 +8,6 @@ contract Inbox {
         message = initialMessage;
     }
 
-
     // function getMessage()  public view returns (string memory) {
     //     return message;
     // }
