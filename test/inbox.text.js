@@ -24,11 +24,12 @@ describe("Inbox", () => {
     assert.ok(inbox.options.address);
   });
 
-  // it("has a default message", async () => {
-  //   const message = await inbox.methods.message().call();
-  //   assert.equal(message, INITIAL_MESSAGE);
-  // });
-
+  it("has a default message", async () => {
+    const message = await inbox.methods.message().call();
+    console.log("message is "+ message);
+    // assert.equal(message, INITIAL_MESSAGE);
+  });
+ 
   it("updates the message", async () => {
     await inbox.methods.setMessage("bye").send({ from: accounts[0] });
     const message = await inbox.methods.message().call();
