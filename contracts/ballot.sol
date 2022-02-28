@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 contract Lottery {
     address public manager;
-    address[] public players;
+    address payable[] public players;
 
     constructor() {
         manager = msg.sender;
@@ -12,7 +12,7 @@ contract Lottery {
     function enter() public payable {
         require(msg.value > .01 ether);
         // checking to see amount
-        players.push(msg.sender);
+        players.push(payable(msg.sender));
     }
 
     function random() private view returns (uint256) {
@@ -22,5 +22,10 @@ contract Lottery {
                     abi.encodePacked(block.difficulty, block.timestamp, players)
                 )
             );
+    }
+
+    function pickWiner() public {
+        uint256 index = random() % players.length;
+        players[index].transfer(address(this).balance);
     }
 }
