@@ -24,10 +24,14 @@ contract Lottery {
             );
     }
 
-    function pickWiner() public {
-        require(msg.sender == manager);
+    function pickWiner() public restricter {
         uint256 index = random() % players.length;
         players[index].transfer(address(this).balance);
         players = new address payable[](0);
+    }
+
+    modifier restricter() {
+        require(msg.sender == manager);
+        _;
     }
 }
