@@ -9,10 +9,9 @@ let lottery;
 let accounts;
 
 beforeEach(async () => {
-  //Get a list of all accounts
+    
   accounts = await web3.eth.getAccounts();
 
-  //using accounts to deploy a contract
   lottery = await new web3.eth.Contract(abi)
     .deploy({ data: bytecode })
     .send({ from: accounts[0], gas: "1000000" });
