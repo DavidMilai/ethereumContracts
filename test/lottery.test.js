@@ -9,7 +9,6 @@ let lottery;
 let accounts;
 
 beforeEach(async () => {
-    
   accounts = await web3.eth.getAccounts();
 
   lottery = await new web3.eth.Contract(abi)
@@ -17,9 +16,21 @@ beforeEach(async () => {
     .send({ from: accounts[0], gas: "1000000" });
 });
 
+describe("Lottery Contract", () => {
+  it("deploys a contracts", () => {
+    assert.ok(lottery.options.address);
+  });
+  it("allows players to join", async () => {
+    await lottery.methods.enter().send({
+      from: accounts[0],
+      value: web3.utils.toWei("0.02", "ether"),
+    });
 
-describe ('Lottery Contract',()=>{
-    it("deploys a contracts", () => {
-        assert.ok(lottery.options.address);
-      });
-})
+    const players = await lottery.methods.getPlayers().call({
+      from: accounts[0],
+    });
+
+    assert.equal(accounts[0], players[0]);
+    assert.equal(1, players.length);
+  });
+});
