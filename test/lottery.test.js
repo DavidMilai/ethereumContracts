@@ -73,6 +73,17 @@ describe("Lottery Contract", () => {
     }
   });
 
+  it("checks for minimum ammount", async () => {
+    try {
+      await lottery.methods.enter().send({
+        from: accounts[0],
+        value: "300",
+      });
+      assert(false);
+    } catch (error) {
+      assert(error);
+    }
+  });
 
   it("checks for minimum ammount", async () => {
     try {
