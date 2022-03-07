@@ -85,11 +85,10 @@ describe("Lottery Contract", () => {
     }
   });
 
-  it("checks for minimum ammount", async () => {
+  it("Only manager can call pick winner", async () => {
     try {
-      await lottery.methods.enter().send({
-        from: accounts[0],
-        value: "300",
+      await lottery.methods.pickWiner().send({
+        from: accounts[1],
       });
       assert(false);
     } catch (error) {
