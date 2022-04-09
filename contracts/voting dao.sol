@@ -11,9 +11,10 @@ contract YouMatterDao {
         bool voted;  
         uint vote;   
     }
-
+ 
     struct Candidate {
-        string name;  
+        string name;
+        address payable candidatesAddress;
         uint voteCount; 
     }
 
@@ -22,12 +23,11 @@ contract YouMatterDao {
     mapping(address => DAOVoter) public voters;
 
     Candidate[] public candidates;
-    
     enum State { Created, Voting, Ended } 
     
     State public state;
 
-    constructor(string[] memory candidateNames) {
+    constructor(string[] memory candidateNames, address payable[] memory _candidatesAddress) {
         chairperson = msg.sender;
         voters[chairperson].weight = 1;
         state = State.Created;
@@ -35,10 +35,21 @@ contract YouMatterDao {
         for (uint i = 0; i < candidateNames.length; i++) {
             candidates.push(Candidate({
                 name: candidateNames[i],
+                candidatesAddress: _candidatesAddress[i],
                 voteCount: 0
             }));
         }
     }
+     
+
+    function donate() public payable {}
+    
+    
+    function withdraw(uint _withdrawalAmount)  public {
+         winningCandidate().transfer(_withdrawalAmount);
+    }
+
+
     
     modifier onlySmartContractOwner() {
         require(
@@ -63,7 +74,7 @@ contract YouMatterDao {
         _;
     }
     
-    function addCandidates(string[] memory candidateNames) 
+    function addCandidates(string[] memory candidateNames,address payable[] memory _candidatesAddress) 
         public 
         EndedState
     {
@@ -71,6 +82,7 @@ contract YouMatterDao {
         for (uint i = 0; i < candidateNames.length; i++) {
             candidates.push(Candidate({
                 name: candidateNames[i],
+                candidatesAddress: _candidatesAddress[i],
                 voteCount: 0
             }));
         }
@@ -125,13 +137,17 @@ contract YouMatterDao {
         public
         EndedState
         view
-        returns (string memory winnerName_)
+        // returns (string memory winnerName_, address payable memory _candidateAddress)
+        returns ( address payable _candidateAddress)
+
     {
         uint winningVoteCount = 0;
         for (uint p = 0; p < candidates.length; p++) {
             if (candidates[p].voteCount > winningVoteCount) {
                 winningVoteCount = candidates[p].voteCount;
-                winnerName_ = candidates[p].name;
+                // winnerName_ = candidates[p].name;
+                _candidateAddress = candidates[p].candidatesAddress;
+
             }
         }
     }
