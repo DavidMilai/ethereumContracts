@@ -1,32 +1,29 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.8.0;
 pragma abicoder v2;
 
-/** 
- * @title Ballot
- * @dev Implements voting process along with vote delegation
- */
-contract Ballot {
+
+contract YouMatterDao {
    
-    struct Voter {
-        uint weight; // weight is accumulated by delegation
-        bool voted;  // if true, that person already voted
-        uint vote;   // index of the voted proposal
+    struct DAOVoter {
+        uint weight; 
+        bool voted;  
+        uint vote;   
     }
 
     struct Candidate {
-        string name;   // candidate name 
-        uint voteCount; // number of accumulated votes
+        string name;  
+        uint voteCount; 
     }
 
     address public chairperson;
 
-    mapping(address => Voter) public voters;
+    mapping(address => DAOVoter) public voters;
 
     Candidate[] public candidates;
     
-    enum State { Created, Voting, Ended } // State of voting period
+    enum State { Created, Voting, Ended } 
     
     State public state;
 
@@ -43,7 +40,6 @@ contract Ballot {
         }
     }
     
-    // MODIFIERS
     modifier onlySmartContractOwner() {
         require(
             msg.sender == chairperson,
@@ -80,7 +76,7 @@ contract Ballot {
         }
     }
     
-    // to start the voting period
+    
     function startVote() 
         public
         onlySmartContractOwner
@@ -88,11 +84,7 @@ contract Ballot {
     {
         state = State.Voting;
     }
-    
-    /*    
-     * to end the voting period
-     * can only end if the state in Voting period
-    */
+
     function endVote() 
         public 
         onlySmartContractOwner
@@ -100,12 +92,7 @@ contract Ballot {
     {
         state = State.Ended;
     }
-    
-    
-    /** 
-     * @dev Give 'voter' the right to vote on this ballot. May only be called by 'chairperson'.
-     * @param voter address of voter
-     */
+
     function giveRightToVote(address voter) public {
         require(
             msg.sender == chairperson,
@@ -119,23 +106,18 @@ contract Ballot {
         voters[voter].weight = 1;
     }
 
-    /**
-     * @dev Give your vote (including votes delegated to you) to candidate 'candidates[candidate].name'.
-     * @param candidate index of candidate in the candidates array
-     */
     function vote(uint candidate) 
         public
         VotingState
     {
-        Voter storage sender = voters[msg.sender];
+        DAOVoter
+ storage sender = voters[msg.sender];
         require(sender.weight != 0, "Has no right to vote");
         require(!sender.voted, "Already voted.");
         sender.voted = true;
         sender.vote = candidate;
 
-        // If 'candidate' is out of the range of the array,
-        // this will throw automatically and revert all
-        // changes.
+    
         candidates[candidate].voteCount += sender.weight;
     }
 
