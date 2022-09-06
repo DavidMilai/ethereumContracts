@@ -15,15 +15,15 @@ contract ZombieFactory {
     }
 
     Zombie[] public zombies;
-    
-    mapping (uint  => Zombie) public zombieToOwner;
-    mapping (address => uint) ownerZombieCount;
 
+    mapping (uint => address) public zombieToOwner;
+    mapping (address => uint) ownerZombieCount;
 
     function _createZombie(string memory _name, uint _dna) private {
         uint id = zombies.push(Zombie(_name, _dna)) - 1;
+        // start here
         emit NewZombie(id, _name, _dna);
-    } 
+    }
 
     function _generateRandomDna(string memory _str) private view returns (uint) {
         uint rand = uint(keccak256(abi.encodePacked(_str)));
